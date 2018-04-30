@@ -1,20 +1,23 @@
 
-#include "SceneGame.h"
-#include "AppMacros.h"
+#include "MainScene.h"
+
 #include "Stone.h"
 #include "Ai.h"
 #include "SceneStart.h"
+
+#include "common.h"
+
 #include <thread>
 #ifdef WIN32
 #include <Windows.h>
 #else
 #include <unistd.h>
 #endif // DEBUG
-int SceneGame::sm_r = 0;
-Vec2 SceneGame::sm_offVec2(0, 0);
+int MainScene::sm_r = 0;
+Vec2 MainScene::sm_offVec2(0, 0);
 
-SceneGame* SceneGame::create(int level) {
-	SceneGame* pRet = new SceneGame();
+MainScene* MainScene::create(int level) {
+	MainScene* pRet = new MainScene();
 	if (pRet&&pRet->init(level)) {
 		pRet->autorelease();
 	}
@@ -24,7 +27,7 @@ SceneGame* SceneGame::create(int level) {
 	}
 	return pRet;
 }
-bool SceneGame::init(int level) {
+bool MainScene::init(int level) {
 	Scene::init();
 	_level = level;
 	_isRedOnBelow = true;
@@ -64,7 +67,7 @@ bool SceneGame::init(int level) {
 		//坐标转换
 		PlateIVec2 clinkedPlatePoint;
 		Vec2 vec2(pTouch->getLocation());
-		if (!SceneGame::screenPointToPlatePoint(vec2, clinkedPlatePoint)) {
+		if (!MainScene::screenPointToPlatePoint(vec2, clinkedPlatePoint)) {
 			//坐标转换失败,直接返回
 			return;
 		}
@@ -75,14 +78,14 @@ bool SceneGame::init(int level) {
 	return true;
 }
 
-void SceneGame::createBackground() {
+void MainScene::createBackground() {
 	Sprite* background = Sprite::create("floor.jpg");
 	background->setScaleX(winSize.width / background->getContentSize().width);
 	background->setScaleY(winSize.height / background->getContentSize().height);
 	background->setPosition(winSize.width / 2, winSize.height / 2);
 	this->addChild(background);
 }
-void SceneGame::createPlate() {
+void MainScene::createPlate() {
 
 	_plate = Sprite::create("background.png");
 	int adjust = winSize.height / 24;
@@ -94,19 +97,19 @@ void SceneGame::createPlate() {
 	addChild(_plate);
 
 
-	SceneGame::sm_r = _plate->getContentSize().height / 10;
+	MainScene::sm_r = _plate->getContentSize().height / 10;
 	sm_offVec2.x = sm_r;
 	sm_offVec2.y = sm_r / 2;
 
 }
-void SceneGame::addCtrlPanel() {
+void MainScene::addCtrlPanel() {
 	Menu* menu = Menu::create();
 	menu->setPosition(menu->getPosition() + Size(winSize.width*.7f / 2, 0));
 	addChild(menu);
 
 	MenuItemImage * regretItem = MenuItemImage::create(std::string("regret.jpg"),
 													   std::string("regret.jpg"),
-													   std::bind(&SceneGame::regretItemCallback, this,
+													   std::bind(&MainScene::regretItemCallback, this,
 																 std::placeholders::_1));
 	auto closeItemCallback = [&](Ref*) {
 
@@ -132,7 +135,7 @@ void SceneGame::addCtrlPanel() {
 	//menu->alignItemsVertically();
 
 }
-void SceneGame::createStones() {
+void MainScene::createStones() {
 
 	for (int i = 0; i < 32; i++) {
 		Stone* stone = Stone::create(i, _isRedOnBelow);
@@ -142,28 +145,30 @@ void SceneGame::createStones() {
 	}
 
 }
-void SceneGame::addProgressBar() {
+void MainScene::addProgressBar() {
 	_progress = ProgressTimer::create(Sprite::create(IMAGE_Loading__AnimCoil));
-	_progress->setPosition(550, 240);
+	_progress->setPosition(g_winSize.width * .7f, g_winSize.height * .5f);
 	_progress->setScale(0.5f);
 	_progress->setPercentage(0);
+	_progress->setAnchorPoint(Vec2(.5f,.5f));
 	//_progress->setMidpoint(Vec2(.5f, .5f));
 	_progress->setType(ProgressTimer::Type::RADIAL);
 
 	_progressText = LabelAtlas::create("", IMAGE_Labelatlas, 24, 32, '0');
-	_progressText->setPosition(530, 230);
+	_progressText->setPosition(g_winSize.width * .7f, g_winSize.height * .5f);
+	_progressText->setAnchorPoint(Vec2(.5f, .5f));
 	addChild(_progressText);
 	addChild(_progress);
 }
 
-Stone* SceneGame::getStoneByVec2(const Vec2& vec2) {
+Stone* MainScene::getStoneByVec2(const Vec2& vec2) {
 	PlateIVec2  platePoint;
 	if (!screenPointToPlatePoint(vec2, platePoint)) {
 		return nullptr;
 	}
 	return getStonePointerRefByPlatePoint(platePoint);
 }
-bool SceneGame::screenPointToPlatePoint(const Vec2& screen_pt, PlateIVec2 & platePoint) {
+bool MainScene::screenPointToPlatePoint(const Vec2& screen_pt, PlateIVec2 & platePoint) {
 
 
 	if (!_plate->getBoundingBox().containsPoint(screen_pt)) {
@@ -171,12 +176,12 @@ bool SceneGame::screenPointToPlatePoint(const Vec2& screen_pt, PlateIVec2 & plat
 	}
 	Vec2 pointInPlate = _plate->convertToNodeSpace(screen_pt);
 
-	platePoint.row = pointInPlate.y / SceneGame::sm_r;
-	platePoint.col = (pointInPlate.x - SceneGame::sm_r / 2) / SceneGame::sm_r;
+	platePoint.row = pointInPlate.y / MainScene::sm_r;
+	platePoint.col = (pointInPlate.x - MainScene::sm_r / 2) / MainScene::sm_r;
 
 	return true;
 }
-int SceneGame::getStoneCountInTwoPlatePoint(const PlateIVec2& ppt1,
+int MainScene::getStoneCountInTwoPlatePoint(const PlateIVec2& ppt1,
 											const PlateIVec2& ppt2) {
 	int countRet = 0;
 	if (ppt1.col == ppt2.col&&ppt1.row == ppt2.row) {
@@ -210,19 +215,19 @@ int SceneGame::getStoneCountInTwoPlatePoint(const PlateIVec2& ppt1,
 	}
 	return -1;
 }
-void SceneGame::onEnter() {
+void MainScene::onEnter() {
 	Scene::onEnter();
 
 	_ai = new AI(this, _level);
 	scheduleUpdate();
 }
-void SceneGame::onExit() {
+void MainScene::onExit() {
 	unscheduleUpdate();
 
 	delete _ai;
 	Scene::onExit();
 }
-void SceneGame::onClickThisPoint(const PlateIVec2&clinkedPlatePoint) {
+void MainScene::onClickThisPoint(const PlateIVec2&clinkedPlatePoint) {
 
 	if (_isComputerCanCalculate)
 		return;
@@ -239,7 +244,7 @@ void SceneGame::onClickThisPoint(const PlateIVec2&clinkedPlatePoint) {
 		onClickWithNoSelected(clinkedPlatePoint);
 
 }
-void SceneGame::onClickWithNoSelected(const PlateIVec2& clinkedPlatePoint) {
+void MainScene::onClickWithNoSelected(const PlateIVec2& clinkedPlatePoint) {
 	//取出点击位置的棋子
 	Stone* clinkedStone = getStonePointerRefByPlatePoint(clinkedPlatePoint);
 
@@ -256,7 +261,7 @@ void SceneGame::onClickWithNoSelected(const PlateIVec2& clinkedPlatePoint) {
 		_stoneSelected = clinkedStone;
 	}
 }
-void SceneGame::onClickWithSelected(const PlateIVec2& clinkedPlatePoint) {
+void MainScene::onClickWithSelected(const PlateIVec2& clinkedPlatePoint) {
 	//取出点击位置的棋子
 	Stone* clinkedStone = getStonePointerRefByPlatePoint(clinkedPlatePoint);
 
@@ -266,17 +271,17 @@ void SceneGame::onClickWithSelected(const PlateIVec2& clinkedPlatePoint) {
 	CanMoveResult res = canMove(step);
 	switch (res)
 	{
-	case SceneGame::TARGETISFRIEND:
+	case MainScene::TARGETISFRIEND:
 		//重选
 		_stoneSelected = nullptr;
 		onClickWithNoSelected(clinkedPlatePoint);
 		break;
-	case SceneGame::CanMOVETOK:
-	case SceneGame::CanKILLOK:
+	case MainScene::CanMOVETOK:
+	case MainScene::CanKILLOK:
 		moveStep(step);
 
-	case SceneGame::CanMOVEERR:
-	case SceneGame::CanKILLERR:
+	case MainScene::CanMOVEERR:
+	case MainScene::CanKILLERR:
 		_stoneSelected = nullptr;
 		_stoneSelectedEffect->setVisible(false);
 		break;
@@ -285,11 +290,11 @@ void SceneGame::onClickWithSelected(const PlateIVec2& clinkedPlatePoint) {
 	}
 }
 
-void SceneGame::moveStep(const Step& step) {
+void MainScene::moveStep(const Step& step) {
 	moveStepBegin(step);
 }
 
-SceneGame::CanMoveResult SceneGame::canMove(const Step& step) {
+MainScene::CanMoveResult MainScene::canMove(const Step& step) {
 	if (step._targetStone)//目标位置有旗子。尝试杀棋
 	{
 		if (step._srcStone->isRed() == step._targetStone->isRed())//点中了友方的另一颗棋子	
@@ -311,7 +316,7 @@ SceneGame::CanMoveResult SceneGame::canMove(const Step& step) {
 
 }
 
-void SceneGame::moveStepBegin(const Step& step) {
+void MainScene::moveStepBegin(const Step& step) {
 	_stoneSelectedEffect->setPosition(step._srcPlatePoint.toScreenPoint());
 	_stoneSelectedEffect->setVisible(true);
 
@@ -340,13 +345,13 @@ void SceneGame::moveStepBegin(const Step& step) {
 	MoveTo* moveTo = MoveTo::create(1.0f, step._targetPlatePoint.toScreenPoint());
 
 	CallFunc* moveFinshed = CallFunc::create(std::bind(
-		&SceneGame::moveStepFinshed, this, step));
+		&MainScene::moveStepFinshed, this, step));
 	Sequence* seq = Sequence::create(moveTo, moveFinshed, nullptr);
 	_isMoving = true;
 	step._srcStone->runAction(seq);
 
 }
-void SceneGame::moveStepFinshed(const Step& step) {
+void MainScene::moveStepFinshed(const Step& step) {
 	_isMoving = false;
 
 
@@ -375,7 +380,7 @@ void SceneGame::moveStepFinshed(const Step& step) {
 	_stoneSelected = nullptr;
 }
 
-void SceneGame::playerWin() {
+void MainScene::playerWin() {
 	Sprite* youWin = Sprite::create("yingjiemian.png");
 	youWin->setLocalZOrder(99);
 
@@ -412,7 +417,7 @@ void SceneGame::playerWin() {
 
 }
 
-bool SceneGame::canMoveByRule(const Step& step) {
+bool MainScene::canMoveByRule(const Step& step) {
 
 	switch (step._srcStone->getType())
 	{
@@ -434,14 +439,14 @@ bool SceneGame::canMoveByRule(const Step& step) {
 
 	return false;
 }
-bool SceneGame::canMoveVehicle(const Step& step) {
+bool MainScene::canMoveVehicle(const Step& step) {
 
 	const PlateIVec2& p = step._srcStone->getPlatePoint();
 	const PlateIVec2& target = step._targetPlatePoint;
 	return (getStoneCountInTwoPlatePoint(p, target) == 0);
 
 }
-bool SceneGame::canMoveHorse(const Step& step) {
+bool MainScene::canMoveHorse(const Step& step) {
 	Stone* stone = step._srcStone;
 	const PlateIVec2& target = step._targetPlatePoint;
 	const PlateIVec2& srcPt = stone->getPlatePoint();
@@ -469,7 +474,7 @@ bool SceneGame::canMoveHorse(const Step& step) {
 		return true;
 	return false;
 }
-bool SceneGame::canMoveElephant(const Step& step) {
+bool MainScene::canMoveElephant(const Step& step) {
 	Stone* stone = step._srcStone;
 	PlateIVec2 target = step._targetPlatePoint;
 	PlateIVec2 srcPt = stone->getPlatePoint();
@@ -501,7 +506,7 @@ bool SceneGame::canMoveElephant(const Step& step) {
 	}
 	return false;
 }
-bool SceneGame::canMoveScholar(const Step& step) {
+bool MainScene::canMoveScholar(const Step& step) {
 	Stone* stone = step._srcStone;
 	PlateIVec2 target = step._targetPlatePoint;
 	PlateIVec2 srcPt = stone->getPlatePoint();
@@ -528,7 +533,7 @@ bool SceneGame::canMoveScholar(const Step& step) {
 
 	return false;
 }
-bool SceneGame::canMoveBoss(const Step& step) {
+bool MainScene::canMoveBoss(const Step& step) {
 
 	Stone* srcStone = step._srcStone;
 	PlateIVec2 target = step._targetPlatePoint;
@@ -582,7 +587,7 @@ bool SceneGame::canMoveBoss(const Step& step) {
 
 	return false;
 }
-bool SceneGame::canMoveGun(const Step& step) {
+bool MainScene::canMoveGun(const Step& step) {
 	Stone* stone = step._srcStone;
 	PlateIVec2 target = step._targetPlatePoint;
 
@@ -593,7 +598,7 @@ bool SceneGame::canMoveGun(const Step& step) {
 		return getStoneCountInTwoPlatePoint(stone->getPlatePoint(), target) == 0;
 	}
 }
-bool SceneGame::canMoveSoldier(const Step& step) {
+bool MainScene::canMoveSoldier(const Step& step) {
 	Stone* stone = step._srcStone;
 	PlateIVec2 target = step._targetPlatePoint;
 
@@ -640,7 +645,7 @@ bool SceneGame::canMoveSoldier(const Step& step) {
 }
 
 
-void SceneGame::regretItemCallback(Ref*) {
+void MainScene::regretItemCallback(Ref*) {
 
 	if (_isMoving)
 		return;
@@ -680,7 +685,7 @@ void SceneGame::regretItemCallback(Ref*) {
 	}
 
 }
-void SceneGame::update(float delta) {
+void MainScene::update(float delta) {
 
 	//每一帧都去检测Ai线程是否有了新的结果
 	_ai->_aiStateMutex.lock();

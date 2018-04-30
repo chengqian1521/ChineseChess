@@ -8,13 +8,13 @@
 
 #include "Step.h"
 
-class SceneGame;
+class MainScene;
 class Step;
 
 class AI
 {
 public:
-	AI(SceneGame *game,int searchLevel);
+	AI(MainScene *game,int searchLevel);
 	~AI();
 public:
 
@@ -71,7 +71,7 @@ public:
 
 	std::mutex _aiStateMutex;
 	AIState _aiState;
-	SceneGame*  _game;
+	MainScene*  _game;
 	int _level;
 
 	std::thread* _calcThread;

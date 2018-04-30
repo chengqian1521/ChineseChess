@@ -1,7 +1,8 @@
 #ifndef __PLATEPOINT_H__
 #define __PLATEPOINT_H__
-#include "cocos2d.h"
-USING_NS_CC;
+
+#include "common.h"
+
 
 //整数型二维向量
 class PlateIVec2
@@ -25,5 +26,10 @@ public:
 	int col;
 	
 };
+
+inline bool isInPlate(const PlateIVec2& iv2) {
+	return iv2.col >= 0 && iv2.row >= 0 && iv2.col < PLATE_COL_NUM && iv2.row < PLATE_ROW_NUM;
+}
+
 
 #endif

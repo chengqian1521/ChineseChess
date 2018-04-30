@@ -1,7 +1,6 @@
 #ifndef __SCENEGAME_H__
 #define __SCENEGAME_H__
-#include "cocos2d.h"
-#include "AppMacros.h"
+
 #include "PlateIVec2.h"
 #include <vector>
 #include <stack> 
@@ -11,7 +10,7 @@ USING_NS_CC;
 
 class Stone;
 class AI;
-class SceneGame :public Scene
+class MainScene :public Scene
 {
 public:
 	enum CanMoveResult
@@ -23,7 +22,7 @@ public:
 		CanKILLERR,		//²»ÄÜÉ±Æå
 	};
 public:
-	static SceneGame* create(int level);
+	static MainScene* create(int level);
 
 
 

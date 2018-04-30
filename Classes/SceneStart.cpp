@@ -2,7 +2,9 @@
 #include "AppMacros.h"
 #include <sstream>
 #include <vector>
-#include "SceneGame.h"
+#include "MainScene.h"
+
+
 
 bool SceneStart::init(){
 	Scene::init();
@@ -43,7 +45,7 @@ bool SceneStart::init(){
 		Vec2 touchPoint = touch->getLocation();
 		if (_start->getBoundingBox().containsPoint(touchPoint)){
 			//ÓÎÏ·¿ªÊ¼
-			Director::getInstance()->replaceScene(SceneGame::create(_curLevel));
+			Director::getInstance()->replaceScene(MainScene::create(_curLevel));
 		
 		}
 		else if (_level->getBoundingBox().containsPoint(touchPoint)

@@ -1,6 +1,6 @@
 #ifndef __STEP_H__
 #define __STEP_H__
-
+#include "common.h"
 #include "PlateIVec2.h"
 class Stone;
 

@@ -2,7 +2,7 @@
 #include "vector"
 #include "cocos2d.h"
 #include "Step.h"
-#include "SceneGame.h"
+#include "MainScene.h"
 #include "Stone.h"
 #include "common.h"
 
@@ -13,6 +13,7 @@
 #else
 #include <unistd.h>
 #endif // WIN32
+
 
 
 int AI::_prices[] = {
@@ -33,7 +34,7 @@ int AI::_prices[] = {
 };
 
 //根据当前局面产生一个step
-AI::AI(SceneGame *game, int searchLevel) :_game(game), _searchLevel(searchLevel) {
+AI::AI(MainScene *game, int searchLevel) :_game(game), _searchLevel(searchLevel) {
 	_maxLevel = 0;
 
 	_aiState = idle;

@@ -1,5 +1,5 @@
 #include "Stone.h"
-#include"SceneGame.h"
+#include"MainScene.h"
 #include <string>
 Stone* Stone::create(int id,bool isRedOnBelow){
 	Stone* pRet = new Stone();
@@ -108,7 +108,7 @@ bool Stone::init(int id, bool isRedOnBelow){
 
 	this->setTexture(texture);
 	this->setTextureRect(Rect(Vec2(0,0),texture->getContentSize()));
-	this->setScale(SceneGame::sm_r/texture->getContentSize().width);
+	this->setScale(MainScene::sm_r/texture->getContentSize().width);
 	
 
 	return true;

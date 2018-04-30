@@ -1,7 +1,8 @@
 #include "PlateIVec2.h"
-#include "SceneGame.h"
-#include "cocos2d.h"
-USING_NS_CC;
+#include "MainScene.h"
+
+
+
 PlateIVec2::PlateIVec2(int row, int col) :row(row), col(col)
 {
 
@@ -15,7 +16,7 @@ PlateIVec2::~PlateIVec2()
 
 cocos2d::Vec2 PlateIVec2::toScreenPoint() const
 {
-	return Vec2(col, row)*SceneGame::sm_r + SceneGame::sm_offVec2;
+	return Vec2(col, row)*MainScene::sm_r + MainScene::sm_offVec2;
 }
 
 bool PlateIVec2::operator==(const PlateIVec2& platePoint)const{

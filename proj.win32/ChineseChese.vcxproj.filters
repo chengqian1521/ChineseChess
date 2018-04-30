@@ -24,9 +24,6 @@
     <ClCompile Include="..\Classes\PlateIVec2.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\SceneGame.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\SceneStart.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -34,6 +31,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Stone.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MainScene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="common.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,16 +50,10 @@
     <ClInclude Include="..\Classes\Ai.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\AppMacros.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\common.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\PlateIVec2.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\SceneGame.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\SceneStart.h">
@@ -68,7 +65,7 @@
     <ClInclude Include="..\Classes\Stone.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\util.h">
+    <ClInclude Include="..\Classes\MainScene.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

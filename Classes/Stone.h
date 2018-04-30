@@ -1,10 +1,9 @@
 #ifndef __CHESSPIECE_H__
 #define __CHESSPIECE_H__
-#include "cocos2d.h"
-#include "AppMacros.h"
-#include "PlateIVec2.h"
 
-USING_NS_CC;
+#include "PlateIVec2.h"
+#include "common.h"
+
 class Stone:public Sprite
 {
 public:
